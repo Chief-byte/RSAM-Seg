@@ -110,7 +110,6 @@ def prepare_training():
         log('model: #params={}'.format(utils.compute_num_params(model, text=True)))
     return model, optimizer, epoch_start, lr_scheduler
 
-#自定义的训练函数，用于执行模型的前向计算、反向传播和参数更新等操作，并返回当前 epoch 的训练损失。
 def train(train_loader, model):
     model.train()
 
@@ -157,7 +156,6 @@ def main(config_, save_path, args):
     model, optimizer, epoch_start, lr_scheduler = prepare_training()
     model.optimizer = optimizer
     lr_scheduler = CosineAnnealingLR(model.optimizer, config['epoch_max'], eta_min=config.get('lr_min'))
-    #这段代码用于将模型移动到 GPU 上，并为多 GPU 训练做准备。具体来说，它执行以下操作
     model = model.cuda()
     model = torch.nn.parallel.DistributedDataParallel(
         model,
@@ -170,7 +168,6 @@ def main(config_, save_path, args):
 
     sam_checkpoint = torch.load(config['sam_checkpoint'])
     model.load_state_dict(sam_checkpoint, strict=False)
-    #这段代码用于冻结模型的部分参数，并输出模型的总参数数和可训练参数数。通过冻结不需要更新的参数，可以减少模型的计算量和存储空间，提高训练的效率和泛化能力。
     for name, para in model.named_parameters():
         if "image_encoder" in name and "prompt_generator" not in name:
             para.requires_grad_(False)

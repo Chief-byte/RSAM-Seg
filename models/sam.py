@@ -7,7 +7,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from models import register
-from models.sam import ImageEncoderViT, MaskDecoder, TwoWayTransformer
+from models.sammodel import ImageEncoderViT, MaskDecoder, TwoWayTransformer
 
 logger = logging.getLogger(__name__)
 from .iou_loss import IOU
